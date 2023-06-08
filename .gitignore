@@ -5,3 +5,9 @@
 /gradlew.bat
 *.class
 .DS_Store
+
+
+/gradlew
+/gradlew.bat
+*.class
+.DS_Store
