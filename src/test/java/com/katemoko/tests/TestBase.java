@@ -14,13 +14,15 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.util.Map;
 
 public class TestBase {
+
+    private static final WebDriverConfig config = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
+
     @BeforeAll
-    static void beforeAll(){
-        WebDriverConfig config = ConfigFactory.create(WebDriverConfig.class, System.getProperties());
+    static void beforeAll() {
         Configuration.baseUrl = config.getBaseUrl();
         Configuration.browser = config.getBrowser();
         Configuration.browserVersion = config.getBrowserVersion();
-        if(config.getIsRemote()) {
+        if (config.getIsRemote()) {
             Configuration.remote = config.getRemoteUrl();
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability("selenoid:options", Map.<String, Object>of(
@@ -34,13 +36,14 @@ public class TestBase {
     }
 
     @BeforeEach
-    void addListener(){
+    void addListener() {
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
 
     @AfterEach
-    void addAttachment(){
+    void addAttachment() {
         Attach.screenshotAs("Last step screenshot");
-        Attach.addVideo();
+        if (config.getIsRemote())
+            Attach.addVideo();
     }
 }
